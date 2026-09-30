@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>工場バーチャル見学</title>
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+</head>
+<body style="margin:0">
+  <a-scene>
+    <a-sky id="sky" src="01.jpg" rotation="0 -90 0"></a-sky>
+
+    <a-camera id="cam" reverse-mouse-drag="true" fov="80">
+      <a-cursor></a-cursor>
+    </a-camera>
+
+    <!-- 矢印ホットスポット：部屋01→02 -->
+    <a-entity class="hotspot" id="hotspot-to02"
+      position="0 -1.5 -5" rotation="-90 0 0"
+      data-target="02.jpg">
+      <a-triangle color="#00AAFF" opacity="0.7" transparent="true"
+        vertex-a="0 0.6 0" vertex-b="-0.4 0 0" vertex-c="0.4 0 0"></a-triangle>
+      <a-plane color="#00AAFF" opacity="0.7" transparent="true"
+        width="0.3" height="0.6" position="0 -0.3 0"></a-plane>
+    </a-entity>
+
+    <!-- 矢印ホットスポット：部屋02→01（最初は隠す） -->
+    <a-entity class="hotspot" id="hotspot-to01"
+      position="0 -1.5 5" rotation="-90 0 180"
+      data-target="01.jpg" visible="false">
+      <a-triangle color="#00AAFF" opacity="0.7" transparent="true"
+        vertex-a="0 0.6 0" vertex-b="-0.4 0 0" vertex-c="0.4 0 0"></a-triangle>
+      <a-plane color="#00AAFF" opacity="0.7" transparent="true"
+        width="0.3" height="0.6" position="0 -0.3 0"></a-plane>
+    </a-entity>
+  </a-scene>
+
+  <script>
+    const camEl = document.getElementById('cam');
+    const skyEl = document.getElementById('sky');
+    const hotspotTo02 = document.getElementById('hotspot-to02');
+    const hotspotTo01 = document.getElementById('hotspot-to01');
+    let fov = 80;
+
+    // マウスホイールでズーム
+    window.addEventListener('wheel', (e) => {
+      fov += e.deltaY * 0.05;
+      fov = Math.min(Math.max(fov, 30), 100);
+      camEl.setAttribute('camera', 'fov', fov);
+    });
+
+    // 部屋01の矢印をクリック → 部屋02へ
+    hotspotTo02.addEventListener('click', () => {
+      skyEl.setAttribute('src', '02.jpg');
+      hotspotTo02.setAttribute('visible', false);
+      hotspotTo01.setAttribute('visible', true);
+    });
+
+    // 部屋02の矢印をクリック → 部屋01へ
+    hotspotTo01.addEventListener('click', () => {
+      skyEl.setAttribute('src', '01.jpg');
+      hotspotTo01.setAttribute('visible', false);
+      hotspotTo02.setAttribute('visible', true);
+    });
+  </script>
+</body>
+</html>
